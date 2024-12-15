@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
 import './Grid.css';
 
 const rows = 15;
@@ -7,30 +7,7 @@ const cols = 20;
 function Grid() {
   const [subgridColor, setSubgridColor] = useState([0, 0, 255]);
 
-  // Generate the grid
-  const gridItems = Array(rows * cols).fill(null);
-
-  useEffect(() => {
-    const intervalId = setInterval(() => {
-      const randomColumn = Math.floor(Math.random() * cols);
-      createRaindrop(randomColumn);
-    }, 200);
-
-    const colorIntervalId = setInterval(() => {
-      setSubgridColor([
-        Math.floor(Math.random() * 255),
-        Math.floor(Math.random() * 255),
-        Math.floor(Math.random() * 255),
-      ]);
-    }, 4000);
-
-    return () => {
-      clearInterval(intervalId);
-      clearInterval(colorIntervalId);
-    };
-  }, [subgridColor]);
-
-  const createRaindrop = (col) => {
+  const createRaindrop = useCallback((col) => {
     const subgrid = document.createElement('div');
     subgrid.style.position = 'absolute';
     subgrid.style.left = `${col * 31}px`;
@@ -57,7 +34,30 @@ function Grid() {
     setTimeout(() => {
       gridContainer.removeChild(subgrid);
     }, 2000);
-  };
+  }, [subgridColor]); // Include `subgridColor` since it is referenced in the function
+
+  useEffect(() => {
+    const intervalId = setInterval(() => {
+      const randomColumn = Math.floor(Math.random() * cols);
+      createRaindrop(randomColumn);
+    }, 200);
+
+    return () => clearInterval(intervalId);
+  }, [createRaindrop]); // Include `createRaindrop` in the dependency array
+
+  useEffect(() => {
+    const colorIntervalId = setInterval(() => {
+      setSubgridColor([
+        Math.floor(Math.random() * 255),
+        Math.floor(Math.random() * 255),
+        Math.floor(Math.random() * 255),
+      ]);
+    }, 4000);
+
+    return () => clearInterval(colorIntervalId);
+  }, []);
+
+  const gridItems = Array(rows * cols).fill(null);
 
   return (
     <div id="grid-container" className="grid-container">
