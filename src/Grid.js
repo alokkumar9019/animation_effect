@@ -19,7 +19,7 @@ function Grid() {
     for (let i = 0; i < 5; i++) {
       const subgridCell = document.createElement('div');
       subgridCell.classList.add('subgrid-cell');
-      const intensity = i / 5;
+      const intensity = i/4;
       let red = Math.floor(subgridColor[0] * intensity);
       let green = Math.floor(subgridColor[1] * intensity);
       let blue = Math.floor(subgridColor[2] * intensity);
@@ -34,7 +34,7 @@ function Grid() {
     setTimeout(() => {
       gridContainer.removeChild(subgrid);
     }, 2000);
-  }, [subgridColor]); // Include `subgridColor` since it is referenced in the function
+  }, [subgridColor]);
 
   useEffect(() => {
     const intervalId = setInterval(() => {
@@ -43,7 +43,7 @@ function Grid() {
     }, 200);
 
     return () => clearInterval(intervalId);
-  }, [createRaindrop]); // Include `createRaindrop` in the dependency array
+  }, [createRaindrop]); 
 
   useEffect(() => {
     const colorIntervalId = setInterval(() => {
